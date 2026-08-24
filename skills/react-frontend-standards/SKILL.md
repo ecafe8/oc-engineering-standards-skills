@@ -50,7 +50,7 @@ src/
 ├── types/                    # 类型定义
 ├── utils/                    # 通用纯帮助函数
 ├── lib/                      # 三方库实例与协议封装
-└── modules/                  # 全栈应用的业务域代码
+└── modules/                  # 业务域代码
     └── <domain>/
         └── index.ts
 ```
