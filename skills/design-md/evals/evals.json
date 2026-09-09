@@ -1,0 +1,23 @@
+{
+  "skill_name": "design-md",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Analyze this frontend project and generate a DESIGN.md from its source code. Use the global CSS, theme tokens, shared components, and dark mode definitions. Do not invent a spacing scale when the code does not define one.",
+      "expected_output": "A canonical DESIGN.md generated in project mode, preserving explicit source values and omitting unsupported tokens.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Generate a DESIGN.md from https://example.com. Inspect the public page and its CSS, preserve exact observed values, include the source website line, and do not turn visual guesses into precise tokens.",
+      "expected_output": "A canonical DESIGN.md generated in URL mode with source attribution and evidence-backed sections only.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Create a DESIGN.md from the project in the current workspace and also compare it with https://example.com as secondary evidence. Use the codebase as the primary source and call out conflicts instead of silently replacing code-defined tokens.",
+      "expected_output": "A project-primary canonical DESIGN.md; the URL is treated only as corroborating evidence.",
+      "files": []
+    }
+  ]
+}
