@@ -13,6 +13,7 @@
 | `taro-weapp-standards` | Taro 微信小程序、页面组织、app 配置、WXSS 兼容性和小程序构建校验 |
 | `hono-backend-standards` | Hono + TypeScript 后端、JWT、安全、API 契约、错误处理、Drizzle、日志和 Bun 测试 |
 | `tanstack-cloudflare-standards` | TanStack Start + Cloudflare Workers、文件路由、Server Functions、Vite 和 Worker 配置 |
+| `design-md` | 从项目源码或公开网站 URL 生成规范化 `DESIGN.md`，提取设计 token、配色、字体、间距、主题与组件样式 |
 
 ## 安装
 
@@ -39,6 +40,7 @@ npx skills add ecafe8/oc-engineering-standards-skills --skill typescript-standar
 - 开发 Hono 后端 API
 - 进行代码重构、架构设计或代码评审
 - 修改路由、构建配置、别名、认证、数据库或部署配置
+- 从项目源码或公开网站 URL 提取设计系统并生成 `DESIGN.md`
 
 框架专用技能会在确认项目使用对应框架后生效，不会将某个框架的目录或 API 约定错误应用到其他项目。
 
@@ -56,6 +58,8 @@ typescript-standards
 
 所有技能都遵循 `typescript-standards` 中的通用 TypeScript 约定。React 相关技能进一步遵循 `react-frontend-standards`，框架专用技能在此基础上补充项目结构和平台约定。
 
+`design-md` 是独立技能，不参与上述依赖链：它的产物是设计规范文档而非代码，因此不继承也不输出编码约定。
+
 ## 目录结构
 
 ```text
@@ -66,10 +70,17 @@ skills/
 ├── expo-router-standards/
 ├── taro-weapp-standards/
 ├── hono-backend-standards/
-└── tanstack-cloudflare-standards/
+├── tanstack-cloudflare-standards/
+└── design-md/
+    ├── SKILL.md
+    ├── references/
+    ├── scripts/
+    └── evals/
 ```
 
-每个技能目录包含一个 `SKILL.md` 文件，其中包括技能元数据、适用范围、编码规范和验证要求。
+每个技能目录都包含一个 `SKILL.md` 文件，其中包括技能元数据、适用范围、编码规范和验证要求。
+
+`design-md` 额外采用渐进式披露结构：`references/` 按源类型拆分参考文档（项目模式、URL 模式、URL 采集协议），`scripts/` 提供可选的能力探测、页面采集与规范校验脚本，`evals/` 提供评测用例。这些脚本是加速器而非前置条件，每个脚本能力都有对应的手工步骤，因此该技能在没有 shell 的 Agent 环境中同样可用。
 
 ## 设计原则
 

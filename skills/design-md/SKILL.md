@@ -7,7 +7,11 @@ description: >-
   design system from source code or a URL, even when they do not explicitly
   mention DESIGN.md. Classify the source first, preserve exact observed values,
   distinguish evidence from inference, and validate the result against the
-  canonical DESIGN.md grammar. This skill supports project and URL sources
+  canonical DESIGN.md grammar. For URL sources, detect the available page
+  acquisition capability, prefer plain HTTP retrieval of the document and its
+  stylesheets, escalate to a rendering backend only when the evidence requires
+  it, ask before installing anything, and never bypass robots restrictions,
+  authentication, or paywalls. This skill supports project and URL sources
   only; do not treat an existing DESIGN.md as a separate import mode.
 ---
 
@@ -20,13 +24,18 @@ a page or dump arbitrary styles.
 ## Workflow
 
 1. Classify the input as exactly one primary source mode: `project` or `url`.
-2. Read only the reference document for the selected mode:
+2. Read only the reference documents for the selected mode:
    - `references/project-mode.md` for a repository, project directory, source
      tree, or code files.
-   - `references/url-mode.md` for a public website URL.
-3. Build a source inventory before generating the document.
-4. Generate `DESIGN.md` using the shared evidence and output rules below.
-5. Run the complete validation protocol before presenting the result.
+   - `references/url-mode.md` for a public website URL, then
+     `references/url-acquisition.md` before retrieving any page.
+3. In URL mode, run the acquisition protocol: pass the safety gate, retrieve the
+   document and its stylesheets over plain HTTP, and escalate to a rendering
+   backend only when the evidence requires it. Record what was captured and what
+   could not be.
+4. Build a source inventory from acquired evidence only.
+5. Generate `DESIGN.md` using the shared evidence and output rules below.
+6. Run the complete validation protocol before presenting the result.
 
 If both a project and URL are provided, use `project` as the primary mode and
 the URL only as secondary corroborating evidence. Do not create an import mode:
@@ -113,13 +122,15 @@ Validation is mandatory. Do not treat a document as complete merely because it
 looks plausible. Run this pipeline:
 
 ```text
-source evidence
+url or project source
+  -> acquisition and capability check (URL mode)
+  -> source evidence
   -> source inventory
   -> generate DESIGN.md
   -> canonical parser
   -> content coverage check
   -> security and output-purity check
-  -> validation status
+  -> acquisition status + validation status
 ```
 
 ### 1. Build a source inventory
@@ -127,30 +138,42 @@ source evidence
 Before generation, record supported evidence categories and their counts or
 locations. At minimum track colors, fonts, type scale, spacing, radii,
 shadows, themes, reusable components, layout constraints, and URL source when
-present. Keep this inventory internal unless the user requests an evidence
-report.
+present. In URL mode also record the acquisition path used, the acquisition
+status, and every artifact that could not be retrieved. Keep this inventory
+internal unless the user requests an evidence report.
 
 ### 2. Run canonical parsing
 
-If the repository provides `parseDesignDoc`, call it on the complete Markdown
-string. Treat `result.errors` as blocking. Check H1, description, Theme, URL
+If the working repository provides its own canonical `DESIGN.md` parser, prefer
+it, call it on the complete Markdown string, and treat its errors as blocking.
+
+Otherwise run the bundled validator from this skill directory:
+
+```bash
+bun run scripts/validate-design-md.ts --file DESIGN.md
+```
+
+It emits `status`, `errors`, `warnings`, `sections`, and `coverage`, and exits
+non-zero when blocking errors are present. It checks H1, description, Theme, URL
 metadata, table shape, token and value syntax, `var()` references, CSS function
 syntax, font blocks, Type Scale, Layout, Components, and Do/Don't structure
 where those sections exist.
 
-If no parser is available, perform the same checks with a deterministic local
-Markdown/CSS validation step. Do not replace validation with visual judgment.
+If neither a repository parser nor a script runtime is available, walk the same
+checklist deterministically by hand. Do not replace validation with visual
+judgment.
 
 ### 3. Check source coverage
 
-Compare the generated AST or parsed sections with the source inventory:
+Compare the parsed sections and coverage counts with the source inventory:
 
 - Every high-priority explicit token must be preserved unless its omission is
   documented as unsafe, duplicated, or intentionally out of scope.
 - Every supported evidence category must have its corresponding section.
 - Every light and dark value must remain in its own theme context.
 - A section may be absent only when the source inventory has insufficient
-  evidence for it.
+  evidence for it. Absence caused by a retrieval failure is not insufficient
+  evidence in the source; record it as an acquisition gap and report it.
 - A single instance must not be counted as a reusable token without evidence.
 
 When an evidence report is requested, report coverage as counts such as
@@ -164,17 +187,35 @@ URLs, personal data, Markdown fences, preambles, trailing explanations, and
 provenance labels from the output. Check that the file is named exactly
 `DESIGN.md`, not `design.md` or another variant.
 
-### 5. Assign a validation status
+### 5. Assign acquisition and validation status
 
-Use this state model:
+Track two independent axes. A document can be perfectly canonical while the
+evidence behind it was incomplete, and collapsing the two hides that risk.
 
 ```text
-valid              = no parser errors, coverage errors, or purity errors
+acquisition = complete | partial | failed
+validation  = valid | valid-with-warnings | invalid
+
+complete            = everything the source exposes was captured
+partial             = some artifact could not be captured, or rendering was
+                      required but unavailable
+failed              = the gate blocked the request, the source could not be
+                      read, or a stop condition was hit
+
+valid               = no parser errors, coverage errors, or purity errors
 valid-with-warnings = no blocking errors, but parser warnings remain
-invalid            = any parser error, coverage error, or purity error
+invalid             = any parser error, coverage error, or purity error
 ```
 
-The status is workflow metadata and must not be written into `DESIGN.md`.
+In project mode, `acquisition` is `complete` when the source tree was read
+without restriction.
+
+When `acquisition` is not `complete`, report the gap outside the document and
+name the sections it prevented. Never record a retrieval failure as an absent
+token: omitting a section because evidence could not be fetched yields a
+document that parses as `valid` while misrepresenting the source.
+
+Both axes are workflow metadata and must not be written into `DESIGN.md`.
 
 ### 6. Repair at most once
 
@@ -185,11 +226,38 @@ unsupported rows where necessary, and report unresolved diagnostics outside
 the document when a report was requested. Never hide uncertainty by fabricating
 values.
 
+Repair fixes document defects only. An acquisition gap cannot be repaired by
+rewriting: re-acquire the missing evidence or report the gap.
+
 ## Optional Evidence Report
 
 Do not add evidence notes to `DESIGN.md` unless the user asks for them. When
 requested, create a separate `design-evidence.md` containing the source mode,
 source locations, evidence for extracted tokens, intentionally omitted values,
-source conflicts, coverage counts, validation status, and clearly separated
+source conflicts, coverage counts, acquisition path and acquisition status,
+artifacts that could not be retrieved, validation status, and clearly separated
 inferences. It must never change the canonical output or turn an inference into
 a token.
+
+## Bundled Scripts
+
+Three optional helpers live in `scripts/`. They are accelerators, never
+prerequisites: each has a manual equivalent described in the reference
+documents, because this skill must also work in agents with no shell. Invoke
+them through an interpreter so a lost executable bit cannot break the flow.
+
+```bash
+sh scripts/probe-env.sh
+bun run scripts/fetch-page.ts --url <URL> --mode static
+bun run scripts/validate-design-md.ts --file DESIGN.md
+```
+
+- `probe-env.sh` reports local acquisition capability. Read-only, no network,
+  installs nothing.
+- `fetch-page.ts` runs the URL safety gate and acquires page and stylesheet
+  evidence. It has no stealth, proxy, private-network, or cookie-persistence
+  flag; those are deliberately absent.
+- `validate-design-md.ts` enforces the canonical grammar in both modes.
+
+Never let a script perform an installation. Probing is read-only, and changing
+the environment requires an explicit user decision.
