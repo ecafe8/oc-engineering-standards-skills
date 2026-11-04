@@ -1,0 +1,40 @@
+{
+  "skill_name": "monorepo-bootstrap",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "在给定的空目录里初始化一个名为 atlas 的 TypeScript + Python monorepo。用 mise 管 Bun、Python 和 uv，先放一个 @atlas/core 包和一个 atlas-worker Python 包，不需要 CI 或 Docker。请实际安装并验证。",
+      "expected_output": "生成最小双工作区、根工具配置与锁文件，TS 和 Python 的行为测试都被发现并通过；首次解析之后冻结安装不改锁文件。联网不可用时明确报告阻塞。",
+      "files": [],
+      "assertions": [
+        "mise 中的 Bun、Python、uv 为精确版本，packageManager 与 Bun 版本一致。",
+        "Python 由 mise 提供，uv 使用明确的解释器选择并管理根虚拟环境。",
+        "没有服务级 uv.lock，根任务显式安装和测试 Python 成员。",
+        "分别报告 TS 与 Python 测试的真实命令和结果，没有用无测试成功模式替代测试。",
+        "没有创建用户未要求的容器、CI 或业务依赖。"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "这个仓库已有 mise+Bun+uv 配置和本地未提交修改。请增加 services/indexer Python 包，并让它依赖已有 services/common 的发行包 atlas-common。保留现有版本和命令，运行新增成员的验证。",
+      "expected_output": "读取已有配置并增量添加成员，正确声明 Python 工作区内部依赖，更新根锁文件并验证导入；用户修改和既有工具版本被保留。",
+      "files": [],
+      "assertions": [
+        "新增成员同时声明内部依赖名与 workspace source，没有使用 PYTHONPATH 绕过安装。",
+        "没有覆盖原有脚本、未提交修改或升级无关工具。",
+        "只有根 uv.lock 被维护，没有新建成员虚拟环境或成员锁文件。"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "对刚初始化成功的 atlas 仓库再次运行初始化检查，补上 Linux Dev Container 配置。不要重置我写的 README 和包脚本；宿主机是 macOS，容器要复用同样的安装与检查入口。",
+      "expected_output": "重复执行保持已有配置与锁文件稳定，增量增加开发容器，通过容器专用依赖路径避免复用宿主机环境，并区分生成配置和实际容器验收。",
+      "files": [],
+      "assertions": [
+        "重复初始化没有无故重写根锁文件、包名或用户文档。",
+        "容器复用 mise 任务并隔离宿主机 node_modules 和 .venv。",
+        "只报告实际执行过的平台验证，没有把本机检查等同于容器通过。"
+      ]
+    }
+  ]
+}

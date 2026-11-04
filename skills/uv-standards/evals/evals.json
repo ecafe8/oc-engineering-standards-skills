@@ -1,0 +1,50 @@
+{
+  "skill_name": "uv-standards",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "已有 uv workspace 中新增 services/indexer，依赖 workspace 里的发行包 atlas-common。保留我未提交的修改，只更新必要的 Python 配置和根锁文件，并验证能导入。",
+      "expected_output": "检查现有 workspace，增量添加可安装成员，声明内部依赖和 workspace source，更新根锁并验证真实导入。",
+      "files": [],
+      "assertions": [
+        "检查工作区成员范围、现有 Git 修改和 Python 兼容约束。",
+        "同时声明 atlas-common 依赖及 workspace source，不用 PYTHONPATH 绕过安装。",
+        "保留用户改动，不创建成员级 uv.lock 或额外虚拟环境。",
+        "报告执行的锁定同步、导入验证及任何阻塞。"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "CI 的 uv sync --locked 因为 uv.lock 跟 pyproject 不一致失败了。请诊断，但我只允许检查，不能修改清单和锁文件。",
+      "expected_output": "只检查不一致并报告原因或阻塞，不更新清单和锁文件，也不用 --frozen 把错误藏起来；说明可能的环境或缓存写入。",
+      "files": [],
+      "assertions": [
+        "不运行会有意更新清单或锁文件的修复命令。",
+        "不把 --frozen 当作锁不一致的解决方案。",
+        "区分源码与锁文件只读和环境或缓存副作用。"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "这是一个只有 uv 的独立 Python 应用，帮我把 httpx 加到应用依赖并运行已有测试。不要新增 mise 或改成 monorepo。",
+      "expected_output": "按现有项目方式添加依赖、更新适用的锁文件并运行测试，不引入 mise、Bun 或 workspace。",
+      "files": [],
+      "assertions": [
+        "将依赖添加到实际应用而不是任意新建的根项目。",
+        "不新增 mise、Bun 或 workspace 配置。",
+        "报告测试实际结果与网络等阻塞。"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "两个现有 uv 成员的 Python 版本和依赖约束互相冲突，锁文件解析不了。请查明原因，先不要拆仓库、删除环境或引入第二个锁文件。",
+      "expected_output": "检查全工作区约束和平台条件，解释可行方案，若需要独立项目先征求确认；保留现有环境和锁文件。",
+      "files": [],
+      "assertions": [
+        "检查涉及成员的 Python 范围及共同依赖约束。",
+        "不通过新成员锁文件或环境掩盖共享解析冲突。",
+        "未经确认不拆分项目或删除已有环境。"
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # AI Agent Engineering Standards Skills
 
-面向 AI Agent 的工程规范技能集合，为 TypeScript、React、Next.js、移动端、后端以及 Cloudflare 应用提供统一的开发、重构和代码评审规范。
+面向 AI Agent 的工程规范技能集合，覆盖 TypeScript、React、Next.js、移动端、后端、Cloudflare、Python 工具链、Monorepo 初始化和开发任务文档。
 
 ## 技能列表
 
@@ -14,6 +14,10 @@
 | `hono-backend-standards` | Hono + TypeScript 后端、JWT、安全、API 契约、错误处理、Drizzle、日志和 Bun 测试 |
 | `tanstack-cloudflare-standards` | TanStack Start + Cloudflare Workers、文件路由、Server Functions、Vite 和 Worker 配置 |
 | `design-md` | 从项目源码或公开网站 URL 生成规范化 `DESIGN.md`，提取设计 token、配色、字体、间距、主题与组件样式 |
+| `development-tasks` | 创建和维护可追踪的开发任务文档、依赖、验收条件、进度与验证证据 |
+| `mise-standards` | mise 工具版本、环境变量、任务、锁文件及本地/CI/容器统一入口 |
+| `uv-standards` | uv Python 项目与 workspace 的依赖、锁文件、解释器和虚拟环境维护 |
+| `monorepo-bootstrap` | 使用 mise、Bun 和 uv 初始化或维护 TypeScript + Python 多语言 Monorepo |
 
 ## 安装
 
@@ -27,9 +31,10 @@ npx skills add ecafe8/oc-engineering-standards-skills
 
 ```bash
 npx skills add ecafe8/oc-engineering-standards-skills --skill typescript-standards
+npx skills add ecafe8/oc-engineering-standards-skills --skill mise-standards
 ```
 
-安装后，AI Agent 会根据当前项目使用的技术栈和任务内容自动加载匹配的技能。
+安装后，AI Agent 会根据当前项目使用的技术栈和任务内容自动加载匹配的技能。每个 Skill 都应可单独安装；请保留所选 Skill 目录中的 `SKILL.md`、`references/`、`scripts/` 和 `evals/`（若存在）。跨 Skill 提及只作为可选补充，不是运行前提。
 
 ## 使用方式
 
@@ -38,6 +43,8 @@ npx skills add ecafe8/oc-engineering-standards-skills --skill typescript-standar
 - 创建或修改 TypeScript/JavaScript 代码
 - 开发 React、Next.js、Expo、Taro 或 TanStack Start 应用
 - 开发 Hono 后端 API
+- 管理 mise/uv 工具链，初始化 TypeScript + Python Monorepo
+- 创建、拆分或维护带验收证据的开发任务文档
 - 进行代码重构、架构设计或代码评审
 - 修改路由、构建配置、别名、认证、数据库或部署配置
 - 从项目源码或公开网站 URL 提取设计系统并生成 `DESIGN.md`
@@ -56,9 +63,9 @@ typescript-standards
 └── hono-backend-standards
 ```
 
-所有技能都遵循 `typescript-standards` 中的通用 TypeScript 约定。React 相关技能进一步遵循 `react-frontend-standards`，框架专用技能在此基础上补充项目结构和平台约定。
+TypeScript/React 相关技能按此关系叠加规范。`development-tasks`、`mise-standards`、`uv-standards`、`monorepo-bootstrap` 和 `design-md` 可独立使用；它们之间的交叉引用仅为可选补充，不是安装或运行前提。
 
-`design-md` 是独立技能，不参与上述依赖链：它的产物是设计规范文档而非代码，因此不继承也不输出编码约定。
+`monorepo-bootstrap` 在适用时可补充参考 mise 和 uv 维护规范，但自身包含初始化双工作区所需的核心指引。每个 Skill 的参考文件均随其目录存放，并通过相对路径引用。
 
 ## 目录结构
 
@@ -71,14 +78,14 @@ skills/
 ├── taro-weapp-standards/
 ├── hono-backend-standards/
 ├── tanstack-cloudflare-standards/
+├── development-tasks/
+├── mise-standards/
+├── uv-standards/
+├── monorepo-bootstrap/
 └── design-md/
-    ├── SKILL.md
-    ├── references/
-    ├── scripts/
-    └── evals/
 ```
 
-每个技能目录都包含一个 `SKILL.md` 文件，其中包括技能元数据、适用范围、编码规范和验证要求。
+每个技能目录都包含 `SKILL.md`，可选包含 `references/`、`scripts/` 和 `evals/`。单独安装时应保留所选技能目录整体，以一并获取它的参考文档和资源。
 
 `design-md` 额外采用渐进式披露结构：`references/` 按源类型拆分参考文档（项目模式、URL 模式、URL 采集协议），`scripts/` 提供可选的能力探测、页面采集与规范校验脚本，`evals/` 提供评测用例。这些脚本是加速器而非前置条件，每个脚本能力都有对应的手工步骤，因此该技能在没有 shell 的 Agent 环境中同样可用。
 
