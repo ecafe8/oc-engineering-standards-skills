@@ -8,6 +8,7 @@
 | --- | --- |
 | `typescript-standards` | TypeScript/JavaScript 通用编码规范、类型安全、命名、目录职责、错误处理、测试和格式化 |
 | `react-frontend-standards` | React + TypeScript 前端项目、Tailwind CSS、Jotai、React Query、共享 UI 组件和 API 约定 |
+| `frontend-motion-standards` | Web 前端动效词典、微交互设计、实现选择、无障碍、性能和兼容性 |
 | `nextjs-standards` | Next.js App Router、路由组、布局、Proxy、API Routes、Server/Client Components 和 Jotai |
 | `expo-router-standards` | Expo Router 应用、文件路由、深链接、平台专用模块和移动端构建校验 |
 | `taro-weapp-standards` | Taro 微信小程序、页面组织、app 配置、WXSS 兼容性和小程序构建校验 |
@@ -42,6 +43,7 @@ npx skills add ecafe8/oc-engineering-standards-skills --skill mise-standards
 
 - 创建或修改 TypeScript/JavaScript 代码
 - 开发 React、Next.js、Expo、Taro 或 TanStack Start 应用
+- 设计、实现或评审前端动效、页面过渡、加载反馈、滚动效果和微交互
 - 开发 Hono 后端 API
 - 管理 mise/uv 工具链，初始化 TypeScript + Python Monorepo
 - 创建、拆分或维护带验收证据的开发任务文档
@@ -73,6 +75,7 @@ TypeScript/React 相关技能按此关系叠加规范。`development-tasks`、`m
 skills/
 ├── typescript-standards/
 ├── react-frontend-standards/
+├── frontend-motion-standards/
 ├── nextjs-standards/
 ├── expo-router-standards/
 ├── taro-weapp-standards/
