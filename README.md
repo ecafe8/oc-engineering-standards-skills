@@ -21,6 +21,10 @@
 | `uv-standards` | uv Python 项目与 workspace 的依赖、锁文件、解释器和虚拟环境维护 |
 | `monorepo-bootstrap` | 使用 mise、Bun 和 uv 初始化或维护 TypeScript + Python 多语言 Monorepo |
 
+## 第三方推荐技能
+
+本仓库之外的优秀第三方技能(官方框架自带、社区通用)见 [THIRD-PARTY-SKILLS.md](./THIRD-PARTY-SKILLS.md)。它们不收录在本仓库 `skills/` 目录中,请按清单中的命令从原始来源安装。
+
 ## 安装
 
 使用 `npx skills add` 安装本仓库的技能：
@@ -112,6 +116,7 @@ skills/
 - 明确说明适用范围，避免与其他技能职责重复。
 - 示例代码与规范保持一致。
 - 文档和示例默认使用 ASCII 字符，除非确有必要使用其他字符。
+- 第三方推荐技能在 `THIRD-PARTY-SKILLS.md` 中维护，需满足其收录标准；不要将第三方技能文件复制进本仓库。
 
 ## 许可证
 
