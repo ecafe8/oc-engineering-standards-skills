@@ -81,6 +81,20 @@
         "按每条边分别处理不对称的安全区,自定义浮层避开折痕和摄像头保留区域。",
         "测试覆盖外屏、内屏展开、半折、分屏、RTL,使用 iPhone Duo 模拟器,并在开合时保留状态。"
       ]
+    },
+    {
+      "id": 7,
+      "prompt": "我们的 macOS SwiftUI App 在官网分发,要加自动更新并在 GitHub Actions 里自动发版。之后也可能上 Mac App Store。",
+      "expected_output": "采用 Sparkle 2:更新器封装在协议后并注入;菜单“检查更新…”与设置开关;Info.plist 配 SUFeedURL/SUPublicEDKey/签名 feed;Developer ID 归档导出、公证、generate_appcast;私钥存 CI Secret;为将来上商店预留不含 Sparkle 的 target。",
+      "files": [],
+      "assertions": [
+        "选用 Sparkle 2,通过 SPM 引入,并封装为 AppUpdater 协议,商店版/测试使用空实现。",
+        "提供菜单“检查更新…”(按 canCheckForUpdates 禁用)和设置中的自动检查开关。",
+        "配置 SUFeedURL(HTTPS)、SUPublicEDKey,并开启 SUVerifyUpdateBeforeExtraction 与 SURequireSignedFeed。",
+        "CI 流程包含 Developer ID 归档导出、公证与 staple、generate_appcast,且 appcast 最后上传。",
+        "EdDSA 私钥与证书只放 CI Secret,不提交仓库、不放更新服务器。",
+        "说明 Mac App Store target 不得链接 Sparkle,并给出 #if SPARKLE 与 otool 校验方法。"
+      ]
     }
   ]
 }

@@ -19,6 +19,10 @@
 - 主 App 与所有扩展、Watch App 版本号一致。
 - 维护 `CHANGELOG`,发布说明本地化。
 
+## macOS 官网分发
+
+macOS 默认通过官网分发:Developer ID 签名、公证、dmg 打包、Sparkle 2 自动更新。完整流程、appcast 发布、密钥管理与测试见 `macos-distribution.md`。以下"发布流程"适用于 iOS/iPadOS/watchOS 及选择上 Mac App Store 的 macOS App。
+
 ## 发布流程
 
 1. 主干通过全部 CI 门禁。

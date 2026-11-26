@@ -8,6 +8,7 @@
 - **控件尺寸**:macOS 控件更紧凑,使用 `.controlSize`;不要沿用 44pt 触控尺寸导致界面稀疏。
 - **App Sandbox**:Mac App Store 必须开启沙盒;文件访问通过 `fileImporter`/打开面板并使用安全作用域书签持久化;仅申请必要的 entitlements。
 - **Hardened Runtime 与公证**:App Store 外分发需 Developer ID 签名 + Hardened Runtime + `notarytool` 公证 + staple。
+- **分发与更新**:默认通过官网以 Developer ID 分发,使用 Sparkle 2 自动更新,菜单提供"检查更新…",设置中提供自动检查开关;同时上 Mac App Store 时,商店 target 不得包含 Sparkle。详见 `../macos-distribution.md`。
 - **生命周期**:关闭最后一个窗口时是否退出需明确;支持 App 在无窗口时响应 Dock 点击重新打开。
 - **AppKit 桥接**:缺少能力时使用 `NSViewRepresentable`/`NSHostingView`;AppKit 代码限定在 macOS 专用文件中。
 - **架构**:构建 Universal 二进制,除非最低版本只支持 Apple 芯片。

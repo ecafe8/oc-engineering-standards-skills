@@ -43,3 +43,4 @@ Logger.feed.info("Loaded \(items.count) items for user \(userID, privacy: .priva
 
 - 只使用 SPM;提交 `Package.resolved`;依赖锁定到版本范围,升级时审阅变更。
 - 引入第三方依赖前评估维护状态、许可证、隐私清单与二进制签名。
+- 自更新(macOS Sparkle):更新包与 appcast 使用 EdDSA 签名并只走 HTTPS;私钥只存 Keychain 或 CI Secret,不进仓库、不放更新服务器。见 `macos-distribution.md`。

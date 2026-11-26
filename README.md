@@ -12,7 +12,7 @@
 | `nextjs-standards` | Next.js App Router、路由组、布局、Proxy、API Routes、Server/Client Components 和 Jotai |
 | `expo-router-standards` | Expo Router 应用、文件路由、深链接、平台专用模块和移动端构建校验 |
 | `taro-weapp-standards` | Taro 微信小程序、页面组织、app 配置、WXSS 兼容性和小程序构建校验 |
-| `apple-app-standards` | iOS、iPadOS、macOS、watchOS 原生 Swift/SwiftUI 应用、HIG 与 Liquid Glass、iPhone Duo 折叠屏适配、兼容性、系统 API、Apple Intelligence、Lint、测试与自动化测试、隐私与发布 |
+| `apple-app-standards` | iOS、iPadOS、macOS、watchOS 原生 Swift/SwiftUI 应用、HIG 与 Liquid Glass、iPhone Duo 折叠屏适配、兼容性、系统 API、Apple Intelligence、Lint、测试与自动化测试、隐私与发布、macOS 官网分发与 Sparkle 更新 |
 | `hono-backend-standards` | Hono + TypeScript 后端、JWT、安全、API 契约、错误处理、Drizzle、日志和 Bun 测试 |
 | `tanstack-cloudflare-standards` | TanStack Start + Cloudflare Workers、文件路由、Server Functions、Vite 和 Worker 配置 |
 | `design-md` | 从项目源码或公开网站 URL 生成规范化 `DESIGN.md`，提取设计 token、配色、字体、间距、主题与组件样式 |

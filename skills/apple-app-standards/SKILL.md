@@ -1,6 +1,6 @@
 ---
 name: apple-app-standards
-description: Apple 平台(iOS、iPadOS、macOS、watchOS,含 iPhone Duo 折叠屏)Swift/SwiftUI 应用开发规范:HIG 与 Liquid Glass UI 设计、iPhone Duo 外屏/内屏/折痕/保留区域/竖排栏适配、系统版本与设备兼容、SPM 模块化代码结构、Swift 6 并发、命名、系统 API 与权限调用、Apple Intelligence/Foundation Models 等端侧 AI 能力、SwiftLint/swift-format、Swift Testing/XCTest、XCUITest 与 xcodebuild 自动化测试、隐私清单、性能、发布上架。适用于创建、重构、评审 Xcode 工程、Swift Package、SwiftUI/UIKit/AppKit 代码、Widget/App Intents/Watch 扩展或 Apple 平台 CI 配置。非 Apple 原生项目(Expo、Flutter、Web)不需要加载。
+description: Apple 平台(iOS、iPadOS、macOS、watchOS,含 iPhone Duo 折叠屏)Swift/SwiftUI 应用开发规范:HIG 与 Liquid Glass UI 设计、iPhone Duo 外屏/内屏/折痕/保留区域/竖排栏适配、系统版本与设备兼容、SPM 模块化代码结构、Swift 6 并发、命名、系统 API 与权限调用、Apple Intelligence/Foundation Models 等端侧 AI 能力、SwiftLint/swift-format、Swift Testing/XCTest、XCUITest 与 xcodebuild 自动化测试、隐私清单、性能、发布上架、macOS 官网分发(Developer ID、公证、Sparkle 自动更新)。适用于创建、重构、评审 Xcode 工程、Swift Package、SwiftUI/UIKit/AppKit 代码、Widget/App Intents/Watch 扩展或 Apple 平台 CI 配置。非 Apple 原生项目(Expo、Flutter、Web)不需要加载。
 compatibility: 需要 macOS 26.6+ 与 Xcode 27.1+(Swift 6.4 编译器)才能构建和运行测试;无 Xcode 环境时仅可做静态评审并须报告未验证项。新 API 签名需通过 Context7 或 developer.apple.com 核对。
 ---
 
@@ -28,6 +28,7 @@ compatibility: 需要 macOS 26.6+ 与 Xcode 27.1+(Swift 6.4 编译器)才能构�
 | 安全、隐私清单、日志 | `references/security-privacy.md` |
 | 性能与可观测性 | `references/performance.md` |
 | 构建配置、签名、版本、TestFlight、审核 | `references/release.md` |
+| macOS 官网分发、公证、Sparkle 自动更新 | `references/macos-distribution.md` |
 | 禁用/过时 API 与替代 | `references/deprecated-apis.md` |
 | 平台注意事项 | `references/platforms/ios.md`、`ipados.md`、`macos.md`、`watchos.md` |
 | iPhone Duo(折叠屏):外屏/内屏、折痕、保留区域、竖排栏、Arrangement View | `references/platforms/iphone-duo.md` |
@@ -52,6 +53,7 @@ compatibility: 需要 macOS 26.6+ 与 Xcode 27.1+(Swift 6.4 编译器)才能构�
 - **系统能力**:每个系统框架封装在协议后;权限在使用前按需请求,`Info.plist` 写明用途说明,完整处理拒绝/受限状态。
 - **AI**:Foundation Models 调用前检查 `SystemLanguageModel.default.availability`,处理所有不可用原因并提供非 AI 降级路径;处理上下文超限与护栏错误。
 - **安全**:密钥与令牌存 Keychain;不在源码、`Info.plist` 或 `UserDefaults` 存秘密;维护 `PrivacyInfo.xcprivacy`;日志使用 `Logger` 并标注隐私级别,禁止 `print`。
+- **macOS 分发**:默认官网 Developer ID 分发 + 公证 + Sparkle 2 更新(EdDSA 签名、签名 feed、HTTPS);更新器封装在协议后;Mac App Store target 不得包含 Sparkle。
 - **质量门禁**:SwiftLint + swift-format 无违规;Release 配置警告即错误;新代码使用 Swift Testing;关键流程有 XCUITest。
 
 ## 3. 实施流程
