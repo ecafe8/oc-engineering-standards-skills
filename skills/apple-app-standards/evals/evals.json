@@ -1,0 +1,86 @@
+{
+  "skill_name": "apple-app-standards",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "给我的 SwiftUI 笔记 App(iOS 18 起,iPad 和 Mac 也支持)加一个“AI 摘要”按钮,用苹果端侧模型生成笔记摘要,输出标题和 3 条要点。",
+      "expected_output": "使用 Foundation Models,检查可用性并处理所有不可用原因,提供降级路径;用 @Generable 结构化输出;以 #available 保护 26 API;协议封装便于测试;核对官方文档。",
+      "files": [],
+      "assertions": [
+        "调用前检查 SystemLanguageModel.default.availability,并分别处理 deviceNotEligible、appleIntelligenceNotEnabled、modelNotReady 与 @unknown default。",
+        "确认项目部署版本:默认基线 iOS 26+ 可直接使用 FoundationModels;若项目最低为 iOS 18,对调用使用 #available(iOS 26, macOS 26, *) 保护并给出旧系统降级。",
+        "使用 @Generable 与 @Guide 定义摘要结构,而不是解析自由文本。",
+        "处理 exceededContextWindowSize 和 guardrailViolation 等生成错误。",
+        "将模型调用封装在协议后,并提供不依赖真实模型的单元测试。",
+        "用户输入不拼接进 instructions。"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "帮我评审这段代码:class FeedViewModel: ObservableObject { @Published var items = [Item]() ; func load() { DispatchQueue.global().async { let data = try! Data(contentsOf: url); DispatchQueue.main.async { self.items = try! JSONDecoder().decode([Item].self, from: data); print(\"loaded\") } } } },视图用 NavigationView 包裹。",
+      "expected_output": "指出过时 API、强制 try、同步网络、print、并发问题,给出 @MainActor @Observable + async URLSession + 错误状态 + Logger + NavigationStack 的重写和测试建议。",
+      "files": [],
+      "assertions": [
+        "建议用 @MainActor @Observable 替代 ObservableObject/@Published。",
+        "指出 Data(contentsOf:) 同步网络与 DispatchQueue 编排,改为 async URLSession。",
+        "指出 try! 和缺失的错误状态,引入可展示的错误处理。",
+        "指出 print 应改为 Logger,NavigationView 应改为 NavigationStack。",
+        "建议通过协议注入网络客户端,并用 Swift Testing 编写测试。"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "新建一个支持 iPhone、iPad、Mac 和 Apple Watch 的习惯打卡 App 的工程骨架,并配好 lint、单元测试和 UI 测试以及 GitHub Actions。",
+      "expected_output": "给出 App 组装层 + 本地 SPM Core/Features 模块结构、多平台 target、xcconfig、SwiftLint/swift-format、Swift Testing、XCUITest Page Object、测试计划与 xcodebuild 设备矩阵 CI。",
+      "files": [],
+      "assertions": [
+        "业务代码放在本地 Swift Package 模块,App target 只做组装,依赖单向。",
+        "为 watchOS 提供独立 Watch App 与精简功能,数据通过 WatchConnectivity 或 CloudKit 同步。",
+        "包含 .swiftlint.yml 和 .swift-format,CI 中以 --strict 运行。",
+        "单元测试使用 Swift Testing,UI 测试使用 accessibilityIdentifier 和 Page Object,不用 sleep。",
+        "CI 使用测试计划和多平台 destination,上传 xcresult,固定 Xcode 版本且不提交签名密钥。",
+        "如环境中没有 Xcode,明确报告未验证的构建和测试。"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "App 要读取用户位置在地图上显示附近门店,还要把登录 token 存起来,马上要提审。",
+      "expected_output": "按需请求 when-in-use 权限并处理各状态,写用途说明;token 存 Keychain;更新隐私清单与营养标签;给出提审清单。",
+      "files": [],
+      "assertions": [
+        "定位权限在用户触发功能时请求,使用 when-in-use 与最低必要精度,并处理拒绝和受限状态及前往设置的引导。",
+        "Info.plist 添加本地化的 NSLocationWhenInUseUsageDescription。",
+        "token 存 Keychain 而非 UserDefaults,日志中不输出 token。",
+        "检查 PrivacyInfo.xcprivacy、Required Reason API 与 App Store 隐私标签一致。",
+        "给出提审前检查要点,如删除测试后门、演示账号、账号删除等相关条款。"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "我们的 iPad App 想上架 Mac,做成什么方案?另外 iOS 26 的 Liquid Glass 怎么适配,我们最低支持 iOS 18。",
+      "expected_output": "比较原生多平台 SwiftUI target、Mac Catalyst、Designed for iPad 并按现状推荐;Mac 需菜单、快捷键、Settings、多窗口、沙盒;Liquid Glass 优先系统控件,自定义用 glassEffect 并有 #available 降级与降低透明度适配。",
+      "files": [],
+      "assertions": [
+        "基于现有代码(SwiftUI 或 UIKit 比重)比较三种 Mac 方案并给出理由。",
+        "列出 macOS 体验要求:菜单命令、键盘快捷键、Settings 场景、窗口尺寸、App Sandbox。",
+        "Liquid Glass 优先依赖系统控件,移除冲突的自定义背景,自定义处使用 glassEffect/GlassEffectContainer。",
+        "按部署版本处理:最低 iOS 18 时用 #available(iOS 26, *) 为 18-25 提供 material 降级;并考虑降低透明度设置。",
+        "提示对新 API 核对官方文档,不臆造签名。"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "我们的 iOS App(UIKit + SwiftUI 混合,最低 iOS 18)要适配 iPhone Duo。播放页是视频 + 控件叠放,很多地方用了 UIScreen.main.bounds 和设备方向判断,底部是自绘的 tab bar。请给出适配方案并改造播放页。",
+      "expected_output": "先核对官方 iPhone Duo 文档;使用 iOS 27.1 SDK 构建;排查 UIScreen.main、方向、idiom、机型尺寸;换成系统栏与带图标和标题的工具栏项以支持竖排;不对称安全区;播放页用 overlay ArrangementView 并以 #available(iOS 27.1) 降级;自定义浮层读取 ReservedRegion;覆盖外屏、内屏、半折的测试矩阵。",
+      "files": [],
+      "assertions": [
+        "说明需使用 iOS 27.1+ SDK 构建才能全屏适配,并对 ReservedRegion/ArrangementView 使用 #available(iOS 27.1, *) 保护。",
+        "替换 UIScreen.main.bounds/scale、设备方向与 userInterfaceIdiom 的布局判断,改为视图/窗口 bounds、size class 或可用空间。",
+        "把自绘 tab bar 改为系统 TabView/UITabBarController,工具栏项同时提供图标和标题,并用 visibilityPriority 或溢出菜单处理空间不足。",
+        "播放页使用 .overlay 样式的 ArrangementView,且不放进 ScrollView/List/NavigationSplitView。",
+        "按每条边分别处理不对称的安全区,自定义浮层避开折痕和摄像头保留区域。",
+        "测试覆盖外屏、内屏展开、半折、分屏、RTL,使用 iPhone Duo 模拟器,并在开合时保留状态。"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+included:
+  - App
+  - Packages
+  - Extensions
+  - UITests
+excluded:
+  - "**/.build"
+  - "**/DerivedData"
+  - "**/Generated"
+
+disabled_rules:
+  - trailing_comma        # 由 swift-format 负责
+  - opening_brace         # 由 swift-format 负责
+  - todo                  # 由 custom_rules 约束格式
+
+opt_in_rules:
+  - force_unwrapping
+  - implicitly_unwrapped_optional
+  - fatal_error_message
+  - first_where
+  - last_where
+  - contains_over_filter_count
+  - contains_over_first_not_nil
+  - empty_count
+  - empty_string
+  - sorted_first_last
+  - reduce_into
+  - toggle_bool
+  - discouraged_optional_boolean
+  - discouraged_object_literal
+  - legacy_multiple
+  - modifier_order
+  - private_swiftui_state
+  - prefer_self_in_static_references
+  - redundant_type_annotation
+  - unowned_variable_capture
+  - weak_delegate
+  - yoda_condition
+  - accessibility_label_for_image
+  - accessibility_trait_for_button
+  - unused_parameter
+  - final_test_case
+  - single_test_class
+
+analyzer_rules:
+  - unused_declaration
+  - unused_import
+
+line_length:
+  warning: 120
+  error: 160
+  ignores_comments: true
+  ignores_urls: true
+function_body_length:
+  warning: 50
+  error: 100
+type_body_length:
+  warning: 300
+  error: 500
+file_length:
+  warning: 500
+  error: 800
+cyclomatic_complexity:
+  warning: 10
+  error: 20
+nesting:
+  type_level: 2
+identifier_name:
+  min_length: 2
+  excluded: [id, x, y, z, i, j, to]
+
+custom_rules:
+  no_print:
+    name: "No print"
+    regex: "\\b(print|debugPrint|NSLog)\\("
+    message: "使用 Logger 替代 print/NSLog"
+    severity: error
+    excluded: ".*Tests/.*"
+  no_dispatch_main:
+    name: "No DispatchQueue.main"
+    regex: "DispatchQueue\\.main\\.async"
+    message: "使用 @MainActor 或 MainActor.run"
+    severity: warning
+  no_main_screen:
+    name: "No UIScreen.main"
+    regex: "UIScreen\\.main\\b"
+    message: "使用视图/窗口 bounds 或 displayScale(iPhone Duo、多窗口会改变尺寸)"
+    severity: error
+  no_orientation_layout:
+    name: "No device orientation for layout"
+    regex: "UIDevice\\.current\\.orientation|statusBarOrientation|\\.interfaceOrientation\\b"
+    message: "比较可用宽高,不用设备方向决定布局"
+    severity: warning
+  no_idiom_layout:
+    name: "No idiom checks"
+    regex: "userInterfaceIdiom\\s*==\\s*\\.(phone|pad)"
+    message: "使用 size class 或可用空间"
+    severity: warning
+  no_navigation_view:
+    name: "No NavigationView"
+    regex: "\\bNavigationView\\b"
+    message: "使用 NavigationStack 或 NavigationSplitView"
+    severity: error
+  no_observable_object:
+    name: "Prefer @Observable"
+    regex: ":\\s*ObservableObject\\b"
+    message: "新代码使用 @Observable"
+    severity: warning
+  todo_with_ticket:
+    name: "TODO needs ticket"
+    regex: "(TODO|FIXME)(?!\\([A-Z]+-\\d+\\))"
+    message: "TODO/FIXME 需关联任务号,如 TODO(APP-123)"
+    severity: warning
